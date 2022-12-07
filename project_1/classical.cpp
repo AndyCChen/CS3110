@@ -1,3 +1,5 @@
+// classical.cpp
+
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -6,61 +8,67 @@
 
 using namespace std;
 
-void getMatrixValues(int **matrixA, int ** matrixB, int maxRows, int maxCols, int matrixNum) { 
-   for (int row = 0; row < maxRows; row++) {
-      for (int col = 0; col < maxCols; col++) {
-         matrixA[row][col] = rand() % 10;
-         matrixB[row][col] = rand() % 10;
+void getMatrixValues(int **matrixA, int ** matrixB, int n) { 
+   for (int n = 0; n < n; n++) {
+      for (int n = 0; n < n; n++) {
+         matrixA[n][n] = rand() % 10;
+         matrixB[n][n] = rand() % 10;
       }
    }
 }
 
-void multiplyMatrices(int **matrixA, int ** matrixB, int maxRows, int maxCols) {
-   for (int row = 0; row < maxRows; row++) {
-      for (int col = 0; col < maxCols; col++) {
-         cout << matrixA[row][col] << " ";
+void multiplyMatrices(int **matrixA, int ** matrixB, int **resultMatrix, int n) {
+   for (int row = 0; row < n; row++) {
+      for (int col = 0; col < n; col++) {
+         for (int k = 0; k < n; k++) {
+            resultMatrix[row][col] += matrixA[row][k] * matrixB[k][col];
+         }
       }
-      cout << endl;
    }
 }
 
 int main() {
    srand((unsigned) time(NULL));
 
-   const int NUM_OF_MATRICES = 1000;
+   const int SETS = 1000;
    const int RUNS_PER_SET = 20;
 
-   int cols, rows;
+   int n;
 
-   cout << "Enter # of cols: ";
-   cin >> cols;
-   
-   cout << "Enter # of rows: ";
-   cin >> rows;
+   cout << "Enter value for n:: ";
+   cin >> n;
 
-   int **matrixA = new int*[rows];
-   int **matrixB = new int*[rows];
+   int **matrixA = new int*[n];
+   int **matrixB = new int*[n];
+   int **resultMatrix = new int*[n];
 
-   for (int row = 0; row < cols; row++) {
-      matrixA[row] = new int[cols];
-      matrixB[row] = new int[cols];
+   for (int row = 0; row < n; row++) {
+      matrixA[row] = new int[n];
+      matrixB[row] = new int[n];
+      resultMatrix[row] = new int[n];
    }
 
-   for (int matrixNumber = 0; matrixNumber < NUM_OF_MATRICES; matrixNumber++) {
-      getMatrixValues(matrixA, matrixB, rows, cols, matrixNumber);
+   double sumOfAverages = 0.0;
+   // run 1000 sets
+   for (int setCount = 0; setCount < SETS; setCount++) {
+      getMatrixValues(matrixA, matrixB, n);
 
-      for (int runNumber = 0; runNumber < RUNS_PER_SET; runNumber++) {
-
-         auto start = chrono::high_resolution_clock::now();
-
-         multiplyMatrices(matrixA, matrixB, rows, cols);
-
-         auto stop = chrono::high_resolution_clock::now();
-
-         duration<double, chrono::milliseconds> ms_double = stop - start;
-         cout << ms_double.count() << endl;
+      // run each set 20 times
+      auto start = chrono::high_resolution_clock::now();
+      for (int runCount = 0; runCount < RUNS_PER_SET; runCount++) {
+         multiplyMatrices(matrixA, matrixB, resultMatrix, n);
       }
+      auto stop = chrono::high_resolution_clock::now();
+
+      chrono::duration<double, std::milli> totalSetTime = stop - start;
+
+      double setAverage = totalSetTime.count() / 20.0;
+      sumOfAverages += setAverage;
    }
+
+   double resultAverage = sumOfAverages / 1000.0;
+
+   cout << "Execution Time: "<< resultAverage << " " << "ms" << endl;
 
    return 0;
 }

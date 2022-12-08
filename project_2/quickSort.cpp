@@ -14,26 +14,57 @@ void printArray (int *array, int arrayLength) {
    for (int index = 0; index < arrayLength; index++) {
       cout << array[index] << " ";
    }
-   cout << endl;
+   cout << endl << endl;
 }
 
 int partition(int *array, int startIndex, int endIndex) {
-   int pivot = array[endIndex];
+   int indexOfPivotValue = endIndex;
+   int pivotPosition = startIndex;
 
+   // find first value that is greater than the pivot
+   for (int n = startIndex; n <= endIndex; n++) {
+      if (array[n] >= array[indexOfPivotValue]) {
+         pivotPosition = n;
+         break;
+      }
+   }
 
+   for (int n = pivotPosition + 1; n < endIndex; n++) {
+      if (array[n] <= array[indexOfPivotValue]) {
+         int valueToSwap = array[pivotPosition];
+         array[pivotPosition] = array[n];
+         array[n] = valueToSwap;
+
+         pivotPosition++;
+      }
+   }
+
+   int valueToSwap = array[pivotPosition];
+   array[pivotPosition] = array[indexOfPivotValue];
+   array[indexOfPivotValue] = valueToSwap;
+
+   return pivotPosition;
 }
 
-void selectWithQuickSort(int *array, int startIndex, int endIndex) {
-   if (startIndex < endIndex) {
-      int pivotIndex = partition(array, startIndex, endIndex);
-
-      selectWithQuickSort(array, startIndex, pivotIndex);
-      selectWithQuickSort(array, pivotIndex + 1, endIndex);
+void selectWithQuickSort(int *array, int startIndex, int endIndex, int kValue) {
+   // return when base case is reached
+   if (startIndex > endIndex) {
+      return;
    }
+
+   int pivotIndex = partition(array, startIndex, endIndex);
+
+   if (kValue < pivotIndex + 1) {
+      selectWithQuickSort(array, startIndex, pivotIndex - 1, kValue);
+   } else if (kValue > pivotIndex + 1) {
+      selectWithQuickSort(array, pivotIndex + 1, endIndex, kValue);
+   } else {
+      cout << "k-th smallest value: " << array[pivotIndex] << endl;
+   }
+
 }
 
 int main() {
-
    const int TOTAL_TEST_CASES = 10000;
 
    unsigned seed = 202038;
@@ -78,7 +109,13 @@ int main() {
 
    generateArrayValues(array, arraySize);
 
+   printArray(array, arraySize);
 
+   cout << "k-value: " << kValue << endl;
+
+   selectWithQuickSort(array, 0, arraySize - 1, kValue);
+
+   delete[] array;
 
    return 0;
 }

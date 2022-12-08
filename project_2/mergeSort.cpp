@@ -131,6 +131,8 @@ int main () {
          kValue = 1;
    }
 
+   cout << "k-value: " << kValue << endl << endl;
+
    int *array = new int[arraySize];
 
    generateArrayValues(array, arraySize);
@@ -141,7 +143,7 @@ int main () {
 
    printArray(array, arraySize);
 
-   cout << "k-th value: " << array[kValue - 1] << endl;
+   cout << "k-th smallest value: " << array[kValue - 1] << endl;
 
    delete[] array;
 

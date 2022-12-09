@@ -48,17 +48,21 @@ int partition(int *array, int startIndex, int endIndex) {
 
 int selectKthSmallestWithQuickSort(int *array, int startIndex, int endIndex, int kValue) {
    int pivotIndex = partition(array, startIndex, endIndex);
-   int kThSmallestValue;
 
-   if (kValue < pivotIndex + 1) {
-      kThSmallestValue = selectKthSmallestWithQuickSort(array, startIndex, pivotIndex - 1, kValue);
-   } else if (kValue > pivotIndex + 1) {
-      kThSmallestValue = selectKthSmallestWithQuickSort(array, pivotIndex + 1, endIndex, kValue);
-   } else {
-      kThSmallestValue = array[pivotIndex];
+   // keep partitioning array until the pivot position is equal to the kValue
+   while (kValue < pivotIndex + 1 || kValue > pivotIndex + 1) {
+
+      // partition values left of pivot
+      if ( kValue < pivotIndex + 1) {
+         pivotIndex = partition(array, startIndex, pivotIndex - 1);
+      }
+      // partition values right of the pivot
+      else if (kValue > pivotIndex + 1) {
+         pivotIndex = partition(array, pivotIndex + 1, endIndex);
+      }
    }
 
-   return kThSmallestValue;
+   return array[pivotIndex];
 }
 
 int main() {
@@ -106,11 +110,13 @@ int main() {
 
    generateArrayValues(array, arraySize);
 
-   int kThSmallestValue;
+   int kthSmallestValue;
+
+   cout << "k-value: " << kValue << endl;
 
    auto start = chrono::high_resolution_clock::now();
    for (int i = 0; i < TOTAL_TEST_CASES; i++) {
-      kThSmallestValue = selectKthSmallestWithQuickSort(array, 0, arraySize - 1, kValue);
+      kthSmallestValue = selectKthSmallestWithQuickSort(array, 0, arraySize - 1, kValue);
    }
    auto stop = chrono::high_resolution_clock::now();
 
@@ -118,8 +124,7 @@ int main() {
 
    double executionTime = totalTime.count() / TOTAL_TEST_CASES;
 
-   cout << "k-value: " << kValue << endl;
-   cout << "k-th smallest value: " << kThSmallestValue << endl;
+   cout << "k-th smallest value: " << kthSmallestValue << endl;
    cout << "Execution time: " << executionTime << " ms" << endl;
 
    delete[] array;

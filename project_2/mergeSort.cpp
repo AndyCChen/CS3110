@@ -137,13 +137,17 @@ int main () {
 
    generateArrayValues(array, arraySize);
 
+   auto start = chrono::high_resolution_clock::now();
    for (int i = 0; i < TOTAL_TEST_CASES; i++) {
       mergeSort(array, 0, arraySize - 1);
    }
+   auto stop = chrono::high_resolution_clock::now();
 
-   printArray(array, arraySize);
+   chrono::duration<double, std::milli> totalTime = stop - start;
+   double executionTime = totalTime.count() / TOTAL_TEST_CASES;
 
    cout << "k-th smallest value: " << array[kValue - 1] << endl;
+   cout << "Execution time: " << executionTime << " ms" << endl;
 
    delete[] array;
 
